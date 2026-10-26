@@ -1,16 +1,28 @@
-# React + Vite
+# Assignment 6 – Post Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A React app (Vite) that loads posts from JSONPlaceholder, handles loading,
+error and empty states with `useReducer`, and filters posts by title.
 
-Currently, two official plugins are available:
+## How to run
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+npm install
+npm run dev
 
-## React Compiler
+## File organization
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- `src/api/postsApi.js` – `fetchPosts()`: fetches posts and returns parsed JSON. No JSX, no React.
+- `src/reducer/postsReducer.js` – initial state and a pure reducer for
+  `FETCH_START`, `FETCH_SUCCESS`, `FETCH_ERROR` (always returns a new object).
+- `src/App.jsx` – owns the async state (`useReducer`), fetches once on mount in
+  `useEffect` with cleanup, keeps the filter text in `useState`, derives the
+  filtered list during render, and shows loading / error / empty / list.
+- `src/components/FilterForm.jsx` – controlled input for filtering by title.
+- `src/components/PostList.jsx` – renders one `Post` per item with `.map()` and `key={post.id}`.
+- `src/components/Post.jsx` – presentational component that shows `title` and `body`.
 
-## Expanding the Oxlint configuration
+## Challenges
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+- `fetch` does not throw on HTTP errors like 404, so I check `response.ok` and throw myself.
+- Avoiding state updates after unmount: I used an `ignore` flag in the effect cleanup.
+- Understanding derived state: only `posts` is stored; the filtered list is calculated on every render.
+- Testing loading and error states: I used Chrome DevTools network throttling and Offline mode.
